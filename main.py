@@ -1,8 +1,15 @@
 from scanner import scan_coin, get_usdt_symbols
 from strategy import check_buy_signal
 from discord_bot import send_discord
+from signal_memory import already_sent, mark_sent
+from market import market_is_bullish
 
 coins = get_usdt_symbols()
+market_ok = market_is_bullish()
+
+if not market_ok:
+    print("❌ BTC Market Bearish")
+    print("Skipping weak buy signals...\n")
 
 print(f"Scanning {len(coins)} Coins...\n")
 
@@ -15,6 +22,10 @@ for coin in coins:
         score, confidence, reasons = check_buy_signal(data)
 
         if score >= 80:
+
+            # Skip duplicate signals
+            if already_sent(coin):
+                continue
 
             print("=" * 50)
             print("Coin       :", coin)
@@ -92,7 +103,7 @@ TP3   : {data['trade']['tp3']}
 """
 
             send_discord(message)
+            mark_sent(coin)
 
     except Exception as e:
-
         print(f"Error scanning {coin}: {e}")
