@@ -1,22 +1,26 @@
-name: Elite Binance Scanner
+name: Elite Binance AI Scanner
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"
   workflow_dispatch:
 
+  schedule:
+    - cron: "*/15 * * * *"
+
 jobs:
+
   scan:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.14"
+          python-version: "3.12"
 
       - name: Install Dependencies
         run: |
